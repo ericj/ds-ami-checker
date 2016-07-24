@@ -7,16 +7,16 @@ code = 0
 
 try:
     if 'http' not in AMI_TEMPLATE:
-        print "load file: " + AMI_TEMPLATE
+        print "Load file: " + AMI_TEMPLATE
         with open(AMI_TEMPLATE) as fp:
             data = json.load(fp)
             fp.close()
     else:
-        print "load url: " + AMI_TEMPLATE
+        print "Load url: " + AMI_TEMPLATE
         data = urllib2.urlopen(AMI_TEMPLATE)
         data = json.load(data)
 except Exception as e:
-    print "parse json file failed."
+    print "Parse json file failed."
     print(vars(e))
     exit(1)
 
@@ -33,9 +33,14 @@ for region in dsm_ami:
     try:
         ec2.describe_images(ImageIds=ami_list)
         for ami_type in ami_dict:
-            print 'checking ' + region + ' ' + ami_type + ':' + ami_dict[ami_type] + ' Ok'
+            print('Checking {0:>15} {1:>7}:{2} ok'.format(region, ami_type, ami_dict[ami_type]))
     except Exception as e:
-        print 'checking ' + region + ' ' + e.message
+        print "Checking %s %s" %(region, e.message)
         code = 1
+
+if code == 0:
+    print "Result: success, no error found."
+else:
+    print "Result: error detected."
 
 exit(code)
